@@ -32,6 +32,7 @@ namespace ReallySimpleProxy
                 .BindAllInterfaces());
 
             WhileConfguringContainer = WhileConfguringContainer ?? (k => { });
+            WhileConfguringContainer(existingContainer);
 
             base.ConfigureApplicationContainer(existingContainer);
         }
