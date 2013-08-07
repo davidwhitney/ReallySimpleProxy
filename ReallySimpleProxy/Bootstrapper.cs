@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using Nancy.Bootstrapper;
 using Nancy.Bootstrappers.Ninject;
@@ -9,6 +10,8 @@ namespace ReallySimpleProxy
 {
     public class Bootstrapper : NinjectNancyBootstrapper
     {
+        public static Action<IKernel> WhileConfguringContainer { get; set; }
+
         protected override void ApplicationStartup(IKernel container, IPipelines pipelines)
         {
             pipelines.BeforeRequest += ctx => container.Get<IProxy>().ProxyRequest(ctx);
@@ -27,6 +30,8 @@ namespace ReallySimpleProxy
             existingContainer.Bind(x => x.FromThisAssembly().SelectAllTypes()
                 .Where(y => y.GetInterfaces().Contains(typeof (IRequestModifier)))
                 .BindAllInterfaces());
+
+            WhileConfguringContainer = WhileConfguringContainer ?? (k => { });
 
             base.ConfigureApplicationContainer(existingContainer);
         }

@@ -16,6 +16,8 @@ namespace ReallySimpleProxy.RequestProxying
         public dynamic ProxyRequest(NancyContext ctx)
         {
             var request = _requestCreator.CloneRequest(ctx.Request);
+            request.Proxy = null;
+
             var body = _requestCreator.ProcessBodyHandlers(ctx.Request);
             
             if (body != null)

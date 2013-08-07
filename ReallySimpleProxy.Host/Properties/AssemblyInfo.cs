@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("ReallySimpleProxyHost.Test.Unit")]
+[assembly: AssemblyTitle("ReallySimpleProxy.Host")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("ReallySimpleProxyHost.Test.Unit")]
+[assembly: AssemblyProduct("ReallySimpleProxyHost.Host")]
 [assembly: AssemblyCopyright("Copyright ©  2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("f342de82-31fb-4f55-9435-d7e57d82f993")]
+[assembly: Guid("99018132-7c5c-4cdb-bf7d-76fa2f83d1f4")]
 
 // Version information for an assembly consists of the following four values:
 //
