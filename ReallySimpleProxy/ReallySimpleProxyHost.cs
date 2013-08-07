@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ServiceProcess;
 using Nancy.Hosting.Self;
+using ReallySimpleProxy.RequestProxying;
 using SimpleServices;
 
 namespace ReallySimpleProxy
@@ -10,20 +11,45 @@ namespace ReallySimpleProxy
     [RunInstaller(true)]
     public class ReallySimpleProxyHost
     {
-        public void SelfHost(string[] args, string serviceName, string host, int port)
-        {
-            var hostClass = new HttpHost(host, port);
+        private readonly string[] _args;
+        private readonly string _serviceName;
 
-            new Service(args,
+        public ReallySimpleProxyHost(string[] args, string serviceName)
+        {
+            _args = args;
+            _serviceName = serviceName;
+        }
+
+        public void Host(string host, int port, List<Type> bodyProcessor = null, List<Type> requestModifiers = null)
+        {
+            ConfigureInterceptors(bodyProcessor, requestModifiers);
+
+            var hostClass = new HttpHost(host, port);
+            new Service(_args,
                 new List<IWindowsService> { hostClass }.ToArray,
                 installationSettings: (serviceInstaller, serviceProcessInstaller) =>
                 {
-                    serviceInstaller.ServiceName = serviceName;
+                    serviceInstaller.ServiceName = _serviceName;
                     serviceInstaller.StartType = ServiceStartMode.Manual;
                     serviceProcessInstaller.Account = ServiceAccount.LocalService;
                 },
                 configureContext: x => { x.Log = Console.WriteLine; })
                 .Host();
+        }
+
+        private static void ConfigureInterceptors(List<Type> bodyProcessor, List<Type> requestModifiers)
+        {
+            Bootstrapper.WhileConfguringContainer = (kernel =>
+            {
+                foreach (var type in bodyProcessor ?? new List<Type>())
+                {
+                    kernel.Bind<IRequestBodyProcessor>().To(type);
+                }
+                foreach (var type in requestModifiers ?? new List<Type>())
+                {
+                    kernel.Bind<IRequestModifier>().To(type);
+                }
+            });
         }
 
         private class HttpHost : IWindowsService

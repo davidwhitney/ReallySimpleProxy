@@ -4,7 +4,8 @@
     {
         static void Main(string[] args)
         {
-            new ReallySimpleProxyHost().SelfHost(args, "ReallySimpleProxy.Host", "localhost", 12345);
+            var proxy = new ReallySimpleProxyHost(args, "ReallySimpleProxy.Host");
+            proxy.Host("localhost", 12345);
         }
     }
 }
