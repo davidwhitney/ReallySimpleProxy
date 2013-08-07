@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using log4net;
 using Nancy;
 
 namespace ReallySimpleProxy.RequestProxying
@@ -11,6 +12,7 @@ namespace ReallySimpleProxy.RequestProxying
     {
         private readonly IEnumerable<IRequestModifier> _requestModifiers;
         private readonly IEnumerable<IRequestBodyProcessor> _bodyProcessors;
+        private static readonly ILog Log = LogManager.GetLogger("Log");
 
         public ForwardingRequestCreator(IEnumerable<IRequestModifier> requestModifiers, IEnumerable<IRequestBodyProcessor> bodyProcessors)
         {
@@ -26,8 +28,11 @@ namespace ReallySimpleProxy.RequestProxying
             var outgoingRequest = (HttpWebRequest)WebRequest.Create(url);
             outgoingRequest.Method = incomingRequest.Method;
 
+            Log.Debug(string.Format("Invoking request modifiers (Total #{0})", _requestModifiers.Count()));
+
             foreach (var mod in _requestModifiers)
             {
+                Log.Debug("Invoking " + mod.GetType().FullName);
                 mod.Modify(url, incomingRequest, outgoingRequest);
             }
             
@@ -56,6 +61,8 @@ namespace ReallySimpleProxy.RequestProxying
             using (var sr = new StreamReader(incomingRequest.Body))
             {
                 var initialBody = sr.ReadToEnd();
+
+                Log.Debug("Invoking body processors...");
                 return _bodyProcessors.Aggregate(initialBody, (c, p) => p.ProcessBody(c));
             }
         }

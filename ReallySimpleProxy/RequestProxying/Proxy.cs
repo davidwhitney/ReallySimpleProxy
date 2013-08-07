@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Net;
+using log4net;
 using Nancy;
 
 namespace ReallySimpleProxy.RequestProxying
@@ -7,6 +8,7 @@ namespace ReallySimpleProxy.RequestProxying
     public class Proxy : IProxy
     {
         private readonly IForwardingRequestCreator _requestCreator;
+        private static readonly ILog Log = LogManager.GetLogger("Log");
 
         public Proxy(IForwardingRequestCreator requestCreator)
         {
@@ -15,6 +17,8 @@ namespace ReallySimpleProxy.RequestProxying
 
         public dynamic ProxyRequest(NancyContext ctx)
         {
+            Log.Debug("Request incoming to " + ctx.Request.Url);
+
             var request = _requestCreator.CloneRequest(ctx.Request);
             request.Proxy = null;
 
@@ -22,6 +26,8 @@ namespace ReallySimpleProxy.RequestProxying
             
             if (body != null)
             {
+                Log.Debug("Sending body..."); 
+                
                 var requestStream = request.GetRequestStream();
                 using (var writer = new StreamWriter(requestStream))
                 {
@@ -30,7 +36,18 @@ namespace ReallySimpleProxy.RequestProxying
                 }
             }
 
-            var response = (HttpWebResponse)request.GetResponse();
+            Log.Debug("Streaming response...");
+
+            WebResponse response;
+            try
+            {
+                response = request.GetResponse();
+            }
+            catch (WebException wex)
+            {
+                response = wex.Response;
+            }
+
             var responseStream = response.GetResponseStream();
             return new Nancy.Responses.StreamResponse(() => responseStream, response.ContentType);
         }
