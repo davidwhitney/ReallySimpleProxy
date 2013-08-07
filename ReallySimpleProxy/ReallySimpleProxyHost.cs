@@ -20,11 +20,12 @@ namespace ReallySimpleProxy
             _serviceName = serviceName;
         }
 
-        public void Host(string host, int port, List<Type> bodyProcessor = null, List<Type> requestModifiers = null)
+        public void Host(string host, int port, List<Type> bodyProcessors = null, List<Type> requestModifiers = null)
         {
-            ConfigureInterceptors(bodyProcessor, requestModifiers);
+            ConfigureInterceptors(bodyProcessors, requestModifiers);
 
             var hostClass = new HttpHost(host, port);
+
             new Service(_args,
                 new List<IWindowsService> { hostClass }.ToArray,
                 installationSettings: (serviceInstaller, serviceProcessInstaller) =>

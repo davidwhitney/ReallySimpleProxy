@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <authors>David Whitney</authors>
+    <owners>$author$</owners>
+    <projectUrl>https://github.com/davidwhitney/ReallySimpleProxy</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+	<summary>HTTP Proxy based on NancyFx which supports extension and modifying requests.</summary>
+    <description>$description$</description>
+    <copyright>Copyright 2013</copyright>
+    <tags>proxy nancyfx davidwhitney</tags>
+  </metadata>
+	<files>	  
+	  <file src="bin\Release\*.pdb" /> 
+	</files> 
+</package>
