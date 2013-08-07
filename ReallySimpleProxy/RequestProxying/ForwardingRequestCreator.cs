@@ -12,8 +12,6 @@ namespace ReallySimpleProxy.RequestProxying
         private readonly IEnumerable<IRequestModifier> _requestModifiers;
         private readonly IEnumerable<IRequestBodyProcessor> _bodyProcessors;
 
-        private readonly List<string> _supportsBody = new List<string> { "POST", "PUT" };
-
         public ForwardingRequestCreator(IEnumerable<IRequestModifier> requestModifiers, IEnumerable<IRequestBodyProcessor> bodyProcessors)
         {
             _requestModifiers = requestModifiers;
@@ -50,7 +48,7 @@ namespace ReallySimpleProxy.RequestProxying
 
         public string ProcessBodyHandlers(Request incomingRequest)
         {
-            if (!_supportsBody.Contains(incomingRequest.Method))
+            if (!new [] { "POST", "PUT" }.Contains(incomingRequest.Method))
             {
                 return null;
             }
